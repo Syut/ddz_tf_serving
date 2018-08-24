@@ -1,0 +1,26 @@
+bazel build -c opt tensorflow_serving/... --action_env PYTHON_BIN_PATH=/usr/bin/python3.5
+
+bazel build -c opt --config=cuda --crosstool_top=@local_config_cuda//crosstool:toolchain tensorflow_serving/...
+
+bazel build -c opt --copt=-msse4.1 --copt=-msse4.2 --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-O3 --config=cuda tensorflow_serving/...
+
+bazel build -c opt --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.2 --config=cuda -k //tensorflow/tools/pip_package:build_pip_package 
+
+bazel build -c opt --config=cuda --crosstool_top=@local_config_cuda//crosstool:toolchain //tensorflow_serving/model_servers:tensorflow_model_server
+bazel build -c opt --config=cuda //tensorflow_serving/model_servers:tensorflow_model_server
+bazel build -c opt --config=cuda //tensorflow/...
+
+bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server --port=9000 --model_name=ddz --model_base_path=/home/liu/humy/ddz_serving_demo/model
+
+bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server --port=9000 --model_name=ddz --model_base_path=/home/SCTAHOME/scta006/tf_serving/dask_tf_serving/models
+
+  native.local_repository(
+      name = "",
+      path = "/home/SCTAHOME/scta006/tf_serving/",
+  )
+
+  native.new_local_repository(
+      name = "",
+      path = "/home/SCTAHOME/scta006/tf_serving/",
+      build_file = clean_dep("//third_party:.BUILD"),
+  )
